@@ -1,0 +1,7 @@
+Để làm một trò chơi tic tac toe trong React, bạn có thể chia thành các component sau:
+
+Square Component: Component này sẽ hiển thị một ô trong bàn cờ và xử lý sự kiện khi người dùng click vào ô đó.
+Board Component: Component này sẽ tạo ra bàn cờ bằng cách sử dụng các Square Components và xử lý logic cho game (ví dụ: lưu trạng thái của bàn cờ, kiểm tra người chơi thắng hay chưa).
+Game Component: Component này sẽ quản lý trạng thái của trò chơi, bao gồm các bước đi và lịch sử của trò chơi.
+App Component: Component này sẽ là component chính và render ra các component trên.
+Với cách chia thành các component như trên, bạn có thể dễ dàng quản lý trạng thái của trò chơi và tái sử dụng các component cho các trò chơi khác nhau.

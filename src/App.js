@@ -1,9 +1,12 @@
+import { Game } from "./components";
+
 function App() {
   return (
-    <div className="App text-red-600">
-      <h1>Ok</h1>
+    <div className="w-full h-[100vh]">
+      <Game />
     </div>
   );
 }
 
 export default App;
+
