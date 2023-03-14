@@ -1,13 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Scrollbars from "react-custom-scrollbars-2";
 import Square from "./Square";
 
 const Board = ({ boards }) => {
   const [board, setBoard] = useState(boards);
-  console.log(board);
   const [nextPlayer, setNextPlayer] = useState("X");
   const [location, setLocation] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    if (checkWin(board, nextPlayer)) {
+      const playAgain = window.confirm(
+        `${nextPlayer} has won! Do you want to play again?`
+      );
+      if (playAgain) {
+        setBoard(board);
+        setNextPlayer("X");
+        setLocation([]);
+        setCurrentStep(0);
+      }
+    }
+  }, [board, nextPlayer, boards]);
 
   const handleClick = (row, col) => {
     const newBoard = board.map((boardRow, rowIndex) => {
@@ -26,20 +39,7 @@ const Board = ({ boards }) => {
     setNextPlayer(nextPlayer === "X" ? "O" : "X");
     setLocation(newLocation);
     setCurrentStep(newLocation.length);
-
-    if (checkWin(newBoard, nextPlayer)) {
-      const playAgain = window.confirm(
-        `${nextPlayer} has won! Do you want to play again?`
-      );
-      if (playAgain) {
-        setBoard(board);
-        setNextPlayer("X");
-        setLocation([]);
-        setCurrentStep(0);
-      }
-    }
   };
-  console.log(location);
 
   const checkWin = (board, player) => {
     // Kiểm tra hàng
