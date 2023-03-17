@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import Scrollbars from "react-custom-scrollbars-2";
 import Square from "./Square";
 
@@ -7,20 +7,61 @@ const Board = ({ boards }) => {
   const [nextPlayer, setNextPlayer] = useState("X");
   const [location, setLocation] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
+  const [gameResult, setGameResult] = useState(null);
 
-  useEffect(() => {
-    if (checkWin(board, nextPlayer)) {
-      const playAgain = window.confirm(
-        `${nextPlayer} has won! Do you want to play again?`
-      );
-      if (playAgain) {
-        setBoard(board);
-        setNextPlayer("X");
-        setLocation([]);
-        setCurrentStep(0);
+  const resetGame = useCallback(() => {
+    setBoard(boards);
+    setNextPlayer("X");
+    setLocation([]);
+    setCurrentStep(0);
+    setGameResult(null);
+  }, [boards]);
+
+  const checkWin = useMemo(() => {
+    const fn = (board, player) => {
+      // Kiểm tra hàng
+      for (let i = 0; i < board.length; i++) {
+        if (board[i].every((square) => square === player)) {
+          return true;
+        }
       }
-    }
-  }, [board, nextPlayer, boards]);
+
+      // Kiểm tra cột
+      for (let i = 0; i < board.length; i++) {
+        if (board.every((row) => row[i] === player)) {
+          return true;
+        }
+      }
+
+      // Kiểm tra đường chéo chính
+      const leftToRight = [];
+      for (let i = 0; i < board.length; i++) {
+        leftToRight.push(board[i][i]);
+      }
+      if (leftToRight.every((square) => square === player)) {
+        return true;
+      }
+
+      // Kiểm tra đường chéo phụ
+      const rightToLeft = [];
+      for (let i = 0; i < board.length; i++) {
+        rightToLeft.push(board[i][board.length - i - 1]);
+      }
+      if (rightToLeft.every((square) => square === player)) {
+        return true;
+      }
+
+      return false;
+    };
+    return fn;
+  }, []);
+
+  const checkTie = useMemo(() => {
+    const fn = (board) => {
+      return board.every((row) => row.every((square) => square !== null));
+    };
+    return fn;
+  }, []);
 
   const handleClick = (row, col) => {
     const newBoard = board.map((boardRow, rowIndex) => {
@@ -37,46 +78,26 @@ const Board = ({ boards }) => {
     const newLocation = [...location, [row, col]];
     setBoard(newBoard);
     setNextPlayer(nextPlayer === "X" ? "O" : "X");
-    setLocation(newLocation);
-    setCurrentStep(newLocation.length);
+    if (checkWin(newBoard, nextPlayer)) {
+      setGameResult(`Người chơi ${nextPlayer} đã thắng!`);
+      setTimeout(() => {
+        if (window.confirm("Bạn có muốn chơi lại không?")) {
+          resetGame();
+        }
+      }, 1000);
+    } else if (checkTie(newBoard)) {
+      setGameResult("Trò chơi kết thúc hoà.");
+      setTimeout(() => {
+        if (window.confirm("Bạn có muốn chơi lại không?")) {
+          resetGame();
+        }
+      }, 1000);
+    } else {
+      setLocation(newLocation);
+      setCurrentStep(newLocation.length);
+      setNextPlayer(nextPlayer === "X" ? "O" : "X");
+    }
   };
-
-  const checkWin = (board, player) => {
-    // Kiểm tra hàng
-    for (let i = 0; i < board.length; i++) {
-      if (board[i].every((square) => square === player)) {
-        return true;
-      }
-    }
-
-    // Kiểm tra cột
-    for (let i = 0; i < board.length; i++) {
-      if (board.every((row) => row[i] === player)) {
-        return true;
-      }
-    }
-
-    // Kiểm tra đường chéo chính
-    const leftToRight = [];
-    for (let i = 0; i < board.length; i++) {
-      leftToRight.push(board[i][i]);
-    }
-    if (leftToRight.every((square) => square === player)) {
-      return true;
-    }
-
-    // Kiểm tra đường chéo phụ
-    const rightToLeft = [];
-    for (let i = 0; i < board.length; i++) {
-      rightToLeft.push(board[i][board.length - i - 1]);
-    }
-    if (rightToLeft.every((square) => square === player)) {
-      return true;
-    }
-
-    return false;
-  };
-
   return (
     <div className="flex gap-20">
       <div>
@@ -87,10 +108,18 @@ const Board = ({ boards }) => {
                 key={colIndex}
                 value={square}
                 onClick={() => handleClick(rowIndex, colIndex)}
+                resetGame={resetGame}
               />
             ))}
           </div>
         ))}
+        {gameResult ? (
+          <p className="flex items-center justify-center mt-10 font-bold">
+            {gameResult}
+          </p>
+        ) : (
+          ""
+        )}
       </div>
       <div className="float-right">
         <Scrollbars style={{ width: 150, height: 250 }}>

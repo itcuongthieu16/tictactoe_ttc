@@ -12,7 +12,7 @@ const Square = ({ value, onClick }) => {
     <button
       onClick={handleClick}
       className={`w-[50px] h-[50px] border border-[#2596be] ${
-        clicked ? "bg-blue-100 text-black font-bold text-xl" : ""
+        clicked ? " text-black font-bold text-xl" : ""
       }`}
     >
       {value}

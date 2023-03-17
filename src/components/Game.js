@@ -3,6 +3,7 @@ import Board from "./Board";
 
 const Game = () => {
   const [boardSize, setBoardSize] = useState([]);
+  const [isdisable, setIsDisable] = useState(true);
 
   const handleStart = () => {
     // Lấy giá trị của input và tạo ra mảng bàn cờ tương ứng
@@ -12,11 +13,13 @@ const Game = () => {
 
     // Lưu mảng bàn cờ vào state boardSize
     setBoardSize(board);
+    setIsDisable(false);
   };
 
   const resetGame = () => {
-    setBoardSize("");
     document.querySelector('input[type="text"]').value = "";
+    setBoardSize([]);
+    setIsDisable(true);
   };
 
   return (
@@ -30,12 +33,14 @@ const Game = () => {
           <input
             type="text"
             className="border rounded border-current hover:border-dotted outline-none py-1 px-2 float-right"
+            disabled={!isdisable}
           />
         </div>
         <div className="flex gap-5 justify-end mt-10 w-[90%] ml-4">
           <button
             className="px-4 py-2 bg-black hover:bg-white hover:text-black font-bold rounded text-white float-right"
             onClick={handleStart}
+            disabled={!isdisable}
           >
             Bắt đầu
           </button>
@@ -43,7 +48,7 @@ const Game = () => {
             onClick={resetGame}
             className="px-4 py-2 bg-black hover:bg-white hover:text-black font-bold rounded text-white float-right"
           >
-            Chơi lại
+            Chọn lại bảng
           </button>
         </div>
       </div>
