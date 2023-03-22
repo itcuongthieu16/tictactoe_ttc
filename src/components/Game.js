@@ -28,7 +28,7 @@ const Game = () => {
         <div className="mb-2 flex flex-col w-[90%] ml-4">
           <h1 className="text-5xl font-bold">Tic Tac Toe</h1>
           <label htmlFor="" className="text-[18px] font-bold mt-10">
-            Nhập số bàn cờ
+            Nhập số bàn cờ X x X
           </label>
           <input
             type="text"

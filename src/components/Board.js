@@ -10,7 +10,7 @@ const Board = ({ boards }) => {
   const [winningSquares, setWinningSquares] = useState([]);
   const [gameResult, setGameResult] = useState(null);
 
-  console.log(winningSquares);
+  console.log("winningSquares", winningSquares);
 
   const resetGame = useCallback(() => {
     setBoard(boards);
@@ -114,6 +114,7 @@ const Board = ({ boards }) => {
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="flex">
             {row.map((square, colIndex) => {
+              //Kiểm tra xem có phải là 1 ô thắng hay ko
               const isWinningSquare = winningSquares.some(
                 ([winningRow, winningCol]) =>
                   winningRow === rowIndex && winningCol === colIndex
@@ -130,13 +131,18 @@ const Board = ({ boards }) => {
             })}
           </div>
         ))}
-        {gameResult ? (
+        <div>
           <p className="flex items-center justify-center mt-10 font-bold">
-            {gameResult}
+            Lượt chơi: {nextPlayer}
           </p>
-        ) : (
-          ""
-        )}
+          {gameResult ? (
+            <p className="flex items-center justify-center mt-10 font-bold text-red-600">
+              {gameResult}
+            </p>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
       <div className="float-right">
         <Scrollbars style={{ width: 150, height: 250 }}>
